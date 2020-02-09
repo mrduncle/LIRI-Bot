@@ -3,21 +3,20 @@
 require("dotenv").config();
 let keys = require("./keys.js");
 let Spotify = require('node-spotify-api');
+let axios = require('axios');
 let moment = require("moment");
 
+
 let spotify = new Spotify(keys.spotify);
+let bandsIT = keys.bandsInTown;
 
-let searchType = process.argv[2];
+let searchType = process.argv[2].toLowerCase();
 
-// axios({
-//     method: 'get',
-//     url: 'http://bit.ly/2mTM3nY',
-//     responseType: 'stream'
-//   })
-//     .then(function (response) {
-//       response.data.pipe(fs.createWriteStream('ada_lovelace.jpg'))
-//     });
-
+async function axiosReturn(url) {
+    let response = await axios.get(url);
+    let data = response.data;
+    console.log(JSON.stringify(data));        
+} 
 
 function spotifyThisSong (songTitle) {
     spotify.search({type: 'track', query: songTitle}, function(err, data) {
@@ -32,13 +31,14 @@ function spotifyThisSong (songTitle) {
     })
 }
 
-
-if (searchType === "Spotify") {
+if (searchType === "spotify") {
     let searchSong = process.argv.splice(3).join(' ');
     spotifyThisSong(searchSong);
-} else if (searchType === "OMDB") {
+} else if (searchType === "omdb") {
     // OmdbThisMovie();
-} else if (searchType === "SomeOtherType") {
-    // Num2();
+} else if (searchType === "bands") {
+    let searchArtist = process.argv.splice(3).join(' ');
+    let url = "https://rest.bandsintown.com/artists/" + searchArtist + "?app_id=" + bandsIT;
+    axiosReturn(url);
 }
 
