@@ -1,4 +1,4 @@
-//@ts-checkts-check
+//@ts-check
 
 require("dotenv").config();
 let keys = require("./keys.js");
@@ -6,7 +6,7 @@ let Spotify = require('node-spotify-api');
 let axios = require('axios');
 let moment = require("moment");
 let inquirer = require("inquirer");
-let fs = require('fs');
+let fs = require("fs");
 
 
 let spotify = new Spotify(keys.spotify);
@@ -106,12 +106,18 @@ async function axiosReturn(url, searchParam) {
 function spotifyThisSong (songTitle) {
     spotify.search({type: 'track', query: songTitle}, function(err, data) {
         if (err) {
-            return console.log('Error occurred: ' + err);
+            // return console.log('Error occurred: ' + err);
+            console.log("\n\n******************************************************\n" +
+                "Your search was unable to find any matches. Check your" +
+                "\n spelling or enter another song and try again.\n" + 
+                "******************************************************\n\n");
         }
-        console.log("\n\n" + data.tracks.items[0].album.artists[0].name);
-        console.log(songTitle);
-        console.log(data.tracks.items[0].preview_url);        
-        console.log(data.tracks.items[0].album.name);
+        else {
+            console.log("\n\n" + data.tracks.items[0].album.artists[0].name);
+            console.log(songTitle);
+            console.log(data.tracks.items[0].preview_url);        
+            console.log(data.tracks.items[0].album.name);
+        }
     })
 }
 
@@ -131,5 +137,16 @@ if (searchType === "spotify-this-song") {
         searchArtist + "/events?app_id=" + bandsIT + 
         "&date=upcoming";
     axiosReturn(url, searchArtist);
+} else if (searchType === "do-what-it-says") {
+    fs.open('random.txt', 'r', (err, fd) => {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                console.error('random.txt does not exist');
+                return;
+            }
+            throw err;
+        }
+        console.log(fd);
+    })
 }
 
