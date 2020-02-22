@@ -14,8 +14,10 @@ let bandsIT = keys.bandsInTown;
 let OMDB = keys.OMDB;
 
 let searchType = process.argv[2].toLowerCase();
+let searchParam;
+let testFile;
 
-function movieResults(data, movieName) {
+function movieResults(data) {
     let movie = {};
     movie.title = data.Title;
     movie.year = data.Year;
@@ -64,7 +66,7 @@ function bandResults(data) {
 }
 
 
-async function axiosReturn(url, searchParam) {
+async function axiosReturn(url) {
     let data = []; //this was necessary to prevent UnhandledPromiseRejectionWarning
                    //but results in an array within an array that must handled below
                    //ie data must be passed as data[0]
@@ -106,7 +108,6 @@ async function axiosReturn(url, searchParam) {
 function spotifyThisSong (songTitle) {
     spotify.search({type: 'track', query: songTitle}, function(err, data) {
         if (err) {
-            // return console.log('Error occurred: ' + err);
             console.log("\n\n******************************************************\n" +
                 "Your search was unable to find any matches. Check your" +
                 "\n spelling or enter another song and try again.\n" + 
@@ -121,32 +122,45 @@ function spotifyThisSong (songTitle) {
     })
 }
 
-if (searchType === "spotify-this-song") {
-    let searchSong = process.argv.splice(3).join(' '); //joins all arguments from the 
-    spotifyThisSong(searchSong);
-} else if (searchType === "movie-this") {
-    let searchMovie = process.argv.splice(3).join('+');
-    if (searchMovie === "") {
-        searchMovie = "Mr.Nobody";
+function searchP() {
+    if (!testFile) {
+        searchParam = process.argv.splice(3).join(' ');
     }
-    let url = "http://www.omdbapi.com/?apikey=" + "trilogy" + "&t=" + searchMovie;
-    axiosReturn(url, searchMovie);
-} else if (searchType === "concert-this") {
-    let searchArtist = process.argv.splice(3).join(' ');
-    let url = "https://rest.bandsintown.com/artists/" + 
-        searchArtist + "/events?app_id=" + bandsIT + 
-        "&date=upcoming";
-    axiosReturn(url, searchArtist);
-} else if (searchType === "do-what-it-says") {
-    fs.open('random.txt', 'r', (err, fd) => {
-        if (err) {
-            if (err.code === 'ENOENT') {
-                console.error('random.txt does not exist');
-                return;
-            }
-            throw err;
-        }
-        console.log(fd);
-    })
+    else {
+        searchParam = testFile[1];
+    }
 }
+
+function whatToBeDone() {
+    searchP();
+    if (searchType === "spotify-this-song") {
+        spotifyThisSong(searchParam);
+    } else if (searchType === "movie-this") {
+        if (searchParam === "") {
+            searchParam = "Mr.Nobody";
+        }
+        let url = "http://www.omdbapi.com/?apikey=" + "trilogy" + "&t=" + searchParam;
+        axiosReturn(url);
+    } else if (searchType === "concert-this") {
+        let url = "https://rest.bandsintown.com/artists/" + 
+            searchParam + "/events?app_id=" + bandsIT + 
+            "&date=upcoming";
+        axiosReturn(url);
+    } else if (searchType === "do-what-it-says") {
+        fs.readFile('random.txt', 'utf8', (err, contents) => {
+            if (err) {
+                if (err.code === 'ENOENT') {
+                    console.error('random.txt does not exist');
+                    return;
+                }
+                throw err;
+            }
+            testFile = contents.split(',');
+            searchType = testFile[0];
+            whatToBeDone();
+        })
+    }
+}
+
+whatToBeDone();
 
