@@ -13,7 +13,8 @@ let spotify = new Spotify(keys.spotify);
 let bandsIT = keys.bandsInTown;
 let OMDB = keys.OMDB;
 
-let searchType = process.argv[2].toLowerCase();
+// let searchType = process.argv[2].toLowerCase();
+let searchType;
 let searchParam;
 let testFile;
 
@@ -41,7 +42,7 @@ function movieResults(data) {
 }
 
 //capitalise the first letter of each word in the band name
-function titleCase(searchParam) {
+function titleCase() {
     let splitString = searchParam.split(' ');
     for (let i = 0; i < splitString.length; i++) {
         splitString[i] = splitString[i].charAt(0).toUpperCase() + splitString[i].slice(1);
@@ -73,10 +74,10 @@ async function axiosReturn(url) {
     try {
         let response = await axios.get(url);
         data.push(response.data);
-        if (searchType === "concert-this" && data[0].length !== 0) {
+        if (searchType === "Find out about upcoming concerts for a band" && data[0].length !== 0) {
             bandResults(data[0]);
         }
-        else if (searchType === "movie-this" && data[0].length !== 0) {
+        else if (searchType === "Find out about a movie" && data[0].length !== 0) {
             // console.log(data[0]);
             if (data[0].Error === undefined) { //no error from the query so proceed
                 movieResults(data[0], searchParam);
@@ -89,7 +90,7 @@ async function axiosReturn(url) {
             }
         }
         else {
-            if (searchType === "concert-this") {
+            if (searchType === "Find out about upcoming concerts for a band") {
                 console.log("\n\nThere are no planned concerts for " + titleCase(searchParam) + ".\n");
             }
         }
@@ -105,17 +106,18 @@ async function axiosReturn(url) {
     }
 } 
 
-function spotifyThisSong (songTitle) {
-    spotify.search({type: 'track', query: songTitle}, function(err, data) {
+function spotifyThisSong () {
+    console.log(searchParam);
+    spotify.search({type: 'track', query: searchParam}, function(err, data) {
         if (err) {
             console.log("\n\n******************************************************\n" +
                 "Your search was unable to find any matches. Check your" +
-                "\n spelling or enter another song and try again.\n" + 
+                "\nspelling or enter another song and try again.\n" + 
                 "******************************************************\n\n");
         }
         else {
             console.log("\n\n" + data.tracks.items[0].album.artists[0].name);
-            console.log(songTitle);
+            console.log(searchParam);
             console.log(data.tracks.items[0].preview_url);        
             console.log(data.tracks.items[0].album.name);
         }
@@ -124,7 +126,7 @@ function spotifyThisSong (songTitle) {
 
 function searchP() {
     if (!testFile) {
-        searchParam = process.argv.splice(3).join(' ');
+        searchParam = process.argv.splice(2).join(' ');
     }
     else {
         searchParam = testFile[1];
@@ -133,20 +135,20 @@ function searchP() {
 
 function whatToBeDone() {
     searchP();
-    if (searchType === "spotify-this-song") {
+    if (searchType === "Spotify a song") {
         spotifyThisSong(searchParam);
-    } else if (searchType === "movie-this") {
+    } else if (searchType === "Find out about a movie") {
         if (searchParam === "") {
             searchParam = "Mr.Nobody";
         }
         let url = "http://www.omdbapi.com/?apikey=" + "trilogy" + "&t=" + searchParam;
         axiosReturn(url);
-    } else if (searchType === "concert-this") {
+    } else if (searchType === "Find out about upcoming concerts for a band") {
         let url = "https://rest.bandsintown.com/artists/" + 
             searchParam + "/events?app_id=" + bandsIT + 
             "&date=upcoming";
         axiosReturn(url);
-    } else if (searchType === "do-what-it-says") {
+    } else if (searchType === "Something random") {
         fs.readFile('random.txt', 'utf8', (err, contents) => {
             if (err) {
                 if (err.code === 'ENOENT') {
@@ -162,5 +164,22 @@ function whatToBeDone() {
     }
 }
 
-whatToBeDone();
+function nextTask() {
+    inquirer
+        .prompt ([
+            {
+                type: "list",
+                name: "whatYouWant",
+                message: "\n\nWhat would you like to do?\n\n",
+                choices: ["Spotify a song", "Find out about a movie", 
+                    "Find out about upcoming concerts for a band", "Something random"],
+                default: "Spotify a song"
+            },
+        ])
+        .then(answers => {
+            searchType = answers.whatYouWant;
+            whatToBeDone();
+        })
+}
 
+nextTask();
