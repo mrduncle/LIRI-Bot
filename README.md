@@ -1,10 +1,10 @@
 # LIRI-Bot
 **Purpose:**
 
-This application allows a user to choose a product from a list of available items in an inventory, specify a quantity and then choose to order the goods. 
+This application provides information to a user after they enter the title of a song, title of a movie or name of a singer/band then choose the appropriate option from a list to execute the program. 
 
 **App Structure:**
-1. Upon intiating the node application _node bamazonCustomer.js_, the user is presented with a table of products and prices sourced from the products table of a database from which they may choose to order a quantity of an item.
+1. Upon intiating the node application _node liri.js <<title of movie, title of song or name of singer/band_, the user is presented with a list of options from which they must choose the appropriate option to match their input when the program is invoked (ie for a song "Thunder", they subsequently choose "Spotify a song" from the list of options available, for a movie "Kill Bill" they subsequently choose "Find out about a movie" from the list of options available).
 
 
 **Instructions:**
