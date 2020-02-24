@@ -5,6 +5,10 @@ This application provides information to a user after they enter the title of a 
 
 **App Instructions:**
 1. Upon intiating the node application _node liri.js <<title of movie, title of song or name of singer/band>>_, the user is presented with a list of options from which they must choose the appropriate option to match their input when the program is invoked (ie for a song "Thunder", they subsequently choose "Spotify a song" from the list of options available, for a movie "Kill Bill" they subsequently choose "Find out about a movie" from the list of options available).
+1.Spotify a song
+1.Find out about a movie
+1.Find out about upcoming concerts for a band
+1.Something random
 
 
 **Screenshots:**
