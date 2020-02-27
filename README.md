@@ -8,7 +8,7 @@ This application provides information to a user after they enter the title of a 
 
 So for a song "Thunder", the user subsequently chooses "Spotify a song" from the list of options available. For a movie "Kill Bill" they subsequently choose "Find out about a movie" from the list of options available.
 
-The table below demonstrates example inputs and outputs for the various options available in the program:
+The table below depicts examples that demonstrate the full functionality for the program:
 
 <table border="1">
     <thead>
