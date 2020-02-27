@@ -107,7 +107,6 @@ async function axiosReturn(url) {
 } 
 
 function spotifyThisSong () {
-    console.log(searchParam);
     spotify.search({type: 'track', query: searchParam}, function(err, data) {
         if (err) {
             console.log("\n\n******************************************************\n" +
