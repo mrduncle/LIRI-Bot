@@ -4,7 +4,12 @@
 This application provides information to a user after they enter the title of a song, title of a movie or name of a singer/band then choose the appropriate option from a list to execute the program. 
 
 **App Instructions:**
-1. Upon intiating the node application _node liri.js <<title of movie, title of song, name of singer/band or nothing>>_, the user is presented with a list of options from which they must choose the appropriate option to match their input when the program is invoked per the table below:
+1. Intiating the node application by typing _node liri.js <<title of movie, title of song, name of singer/band or nothing>>_ in the terminal. The user is then presented with a list of options from which they must choose the appropriate option to match their input when the program is invoked.
+
+So for a song "Thunder", the user subsequently chooses "Spotify a song" from the list of options available. For a movie "Kill Bill" they subsequently choose "Find out about a movie" from the list of options available.
+
+The table below demonstrates example inputs and outputs for the various options available in the program:
+
 <table border="1">
     <thead>
         <tr>
@@ -48,6 +53,6 @@ This application provides information to a user after they enter the title of a 
 </table>
 
 
- So for a song "Thunder", the user subsequently chooses "Spotify a song" from the list of options available, for a movie "Kill Bill" they subsequently choose "Find out about a movie".
+ 
 
 
